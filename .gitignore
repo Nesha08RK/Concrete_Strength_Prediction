@@ -1,0 +1,26 @@
+# Virtual Environment
+venv/
+
+# Python Cache
+__pycache__/
+*.pyc
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# CatBoost temporary files
+catboost_info/
+notebooks/catboost_info/
+
+# TensorBoard logs
+events.out.tfevents*
+
+# Temporary files
+tmp/
+
+# VS Code settings
+.vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db
