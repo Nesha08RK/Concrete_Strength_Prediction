@@ -1,0 +1,8 @@
+Material,Unit,Emission_Factor_kgCO2_per_kg
+Cement,kg,0.90
+Blast Furnace Slag,kg,0.052
+Fly Ash,kg,0.027
+Water,kg,0.0003
+Superplasticizer,kg,1.88
+Coarse Aggregate,kg,0.008
+Fine Aggregate,kg,0.005
