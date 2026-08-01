@@ -66,7 +66,7 @@ function PredictSection() {
           <div>
             <h2 className="text-3xl font-semibold text-white sm:text-4xl">Run a concrete strength prediction in seconds</h2>
             <p className="mt-4 max-w-xl text-lg leading-8 text-slate-300">
-              Adjust the mix parameters, submit the recipe to the deployed Flask API, and receive strength, cost, carbon, and optimization insights instantly.
+              Enter the concrete mix proportions below to unlock AI-powered strength prediction, explainable insights, cost estimation, carbon footprint analysis, and intelligent mix optimization—all in one seamless workflow.
             </p>
           </div>
 
