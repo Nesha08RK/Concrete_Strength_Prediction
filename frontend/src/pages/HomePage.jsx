@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion'
 import HeroSection from '../components/sections/HeroSection'
 import FeatureSection from '../components/sections/FeatureSection'
-import PredictSection from '../components/sections/PredictSection'
-import PipelineSection from '../components/sections/PipelineSection'
+import PredictionCTASection from '../components/sections/PredictionCTASection'
+//import PipelineSection from '../components/sections/PipelineSection'
 import WhySection from '../components/sections/WhySection'
 import StatsSection from '../components/sections/StatsSection'
 import HighlightsSection from '../components/sections/HighlightsSection'
@@ -19,8 +19,7 @@ function HomePage() {
     >
       <HeroSection />
       <FeatureSection />
-      <PredictSection />
-      <PipelineSection />
+      <PredictionCTASection />
       <WhySection />
       <StatsSection />
       <HighlightsSection />
