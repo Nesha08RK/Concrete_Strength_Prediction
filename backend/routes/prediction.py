@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import pandas as pd
 from flask import Blueprint, current_app, jsonify, request
 from werkzeug.exceptions import BadRequest
 
+from config import BASE_DIR
 from services.carbon_service import CarbonService
 from services.cost_service import CostService
 from services.optimization_service import OptimizationService
@@ -11,6 +13,54 @@ from services.recommendation_service import RecommendationService
 from utils.helpers import build_feature_frame, get_strength_category, validate_payload
 
 bp = Blueprint("prediction", __name__)
+
+
+def _build_shap_payload() -> list[dict[str, object]]:
+    shap_path = BASE_DIR / "results" / "shap_feature_importance.csv"
+    if not shap_path.exists():
+        return []
+
+    try:
+        shap_frame = pd.read_csv(shap_path)
+    except Exception:  # noqa: BLE001
+        return []
+
+    feature_map = {
+        "cement": "cement",
+        "water": "water",
+        "age": "age",
+        "fly ash": "fly_ash",
+        "fly_ash": "fly_ash",
+        "blast furnace slag": "blast_furnace_slag",
+        "blast_furnace_slag": "blast_furnace_slag",
+        "superplasticizer": "superplasticizer",
+        "coarse aggregate": "coarse_aggregate",
+        "coarse_aggregate": "coarse_aggregate",
+        "fine aggregate": "fine_aggregate",
+        "fine_aggregate": "fine_aggregate",
+    }
+
+    shap_values: list[dict[str, object]] = []
+    for _, row in shap_frame.iterrows():
+        feature_name = str(row.get("Feature", "")).strip()
+        normalized_feature = feature_name.lower().replace("-", " ").replace("_", " ")
+        feature_key = feature_map.get(normalized_feature, normalized_feature.replace(" ", "_"))
+        contribution = row.get("Mean SHAP Value")
+        if contribution is None:
+            contribution = row.get("mean_shap_value")
+        try:
+            numeric_contribution = float(contribution)
+        except (TypeError, ValueError):
+            numeric_contribution = 0.0
+
+        shap_values.append(
+            {
+                "feature": feature_key,
+                "contribution": round(numeric_contribution, 4),
+            }
+        )
+
+    return shap_values
 
 
 @bp.route("/", methods=["GET"])
@@ -51,6 +101,15 @@ def predict() -> tuple[dict, int]:
         sustainability_rating = round(float(optimization_score / 20.0), 2)
         recommendations = recommendation_service.build_recommendations(payload, carbon_emission)
         top_optimized_mixes = optimization_service.get_top_optimized_mixes()
+        shap_values = _build_shap_payload()
+        if shap_values:
+            top_features = sorted(shap_values, key=lambda item: abs(float(item["contribution"])), reverse=True)[:3]
+            feature_summary = ", ".join(str(item["feature"]) for item in top_features)
+            explanation = (
+                f"The current prediction is most influenced by {feature_summary}, which together explain the model's confidence in this concrete mix."
+            )
+        else:
+            explanation = "The model's strength estimate reflects the current concrete mix proportions and the learned relationships from the training data."
 
         return jsonify(
             {
@@ -62,6 +121,9 @@ def predict() -> tuple[dict, int]:
                 "sustainability_rating": sustainability_rating,
                 "recommendations": recommendations,
                 "top_optimized_mixes": top_optimized_mixes,
+                "optimized_mixes": top_optimized_mixes,
+                "shap_values": shap_values,
+                "explanation": explanation,
             }
         ), 200
     except FileNotFoundError as exc:
