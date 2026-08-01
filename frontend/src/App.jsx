@@ -3,19 +3,26 @@ import { ThemeProvider } from './context/ThemeContext'
 import Layout from './components/layout/Layout'
 import HomePage from './pages/HomePage'
 import PredictPage from './pages/PredictPage'
+import ExplainabilityPage from './pages/ExplainabilityPage'
+import OptimizationPage from './pages/OptimizationPage'
+import { PredictionProvider } from './context/PredictionContext'
 import './App.css'
 
 function App() {
   return (
     <ThemeProvider>
-      <Router>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/predict" element={<PredictPage />} />
-          </Routes>
-        </Layout>
-      </Router>
+      <PredictionProvider>
+        <Router>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/predict" element={<PredictPage />} />
+              <Route path="/explainability" element={<ExplainabilityPage />} />
+              <Route path="/optimization" element={<OptimizationPage />} />
+            </Routes>
+          </Layout>
+        </Router>
+      </PredictionProvider>
     </ThemeProvider>
   )
 }
