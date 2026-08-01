@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowRight, LoaderCircle, Sparkles } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { predictConcreteMix } from '../../services/predictionApi'
+import { usePrediction } from '../../context/PredictionContext'
 
 const defaultForm = {
   cement: 540,
@@ -26,6 +28,8 @@ const fieldConfig = [
 ]
 
 function PredictSection() {
+  const navigate = useNavigate()
+  const { setPrediction } = usePrediction()
   const [formData, setFormData] = useState(defaultForm)
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -48,11 +52,19 @@ function PredictSection() {
     try {
       const response = await predictConcreteMix(formData)
       setResult(response)
+      setPrediction(response)
     } catch (err) {
       setError(err.message)
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleClear = () => {
+    setFormData(defaultForm)
+    setResult(null)
+    setError('')
+    setPrediction(null)
   }
 
   return (
@@ -86,7 +98,7 @@ function PredictSection() {
               </label>
             ))}
 
-            <div className="sm:col-span-2">
+            <div className="sm:col-span-2 flex flex-wrap gap-3">
               <button type="submit" disabled={loading} className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 px-5 py-3 font-medium text-white transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-70">
                 {loading ? (
                   <>
@@ -99,6 +111,9 @@ function PredictSection() {
                     <ArrowRight size={16} />
                   </>
                 )}
+              </button>
+              <button type="button" onClick={handleClear} className="rounded-full border border-white/10 bg-slate-950/70 px-5 py-3 font-medium text-slate-200 transition hover:border-cyan-400/40 hover:text-white">
+                Clear
               </button>
             </div>
           </form>
@@ -146,6 +161,18 @@ function PredictSection() {
                     </li>
                   ))}
                 </ul>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                <button type="button" onClick={() => navigate('/explainability')} className="rounded-full border border-cyan-400/20 bg-cyan-500/10 px-4 py-2 text-sm font-medium text-cyan-100 transition hover:bg-cyan-500/20">
+                  View Explainability
+                </button>
+                <button type="button" onClick={() => navigate('/optimization')} className="rounded-full border border-cyan-400/20 bg-cyan-500/10 px-4 py-2 text-sm font-medium text-cyan-100 transition hover:bg-cyan-500/20">
+                  View Optimization
+                </button>
+                <button type="button" onClick={() => { setResult(null); setError(''); }} className="rounded-full border border-white/10 bg-slate-950/70 px-4 py-2 text-sm font-medium text-slate-200 transition hover:border-cyan-400/40 hover:text-white">
+                  Predict Another Mix
+                </button>
               </div>
             </div>
           ) : (
