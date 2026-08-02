@@ -7,10 +7,8 @@ import { useTheme } from '../../hooks/useTheme'
 const links = [
   { label: 'Home', href: '/' },
   { label: 'Predict', href: '/predict' },
-  { label: 'Explainability', href: '/explainability' },
-  { label: 'Optimization', href: '/optimization' },
-  { label: 'About', href: '/' },
-  { label: 'Contact', href: '/' },
+  { label: 'About', href: '/#about' },
+  { label: 'Contact', href: '/#contact' },
 ]
 
 function Navbar() {
