@@ -19,6 +19,16 @@ body {
   background: #020617;
 }
 
+html:not(.dark) body {
+  color: #0f172a;
+  background: #f8fafc;
+}
+
+html.dark body {
+  color: #f8fafc;
+  background: #020617;
+}
+
 * {
   box-sizing: border-box;
 }
