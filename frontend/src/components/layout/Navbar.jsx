@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Menu, X, Moon, Sun } from 'lucide-react'
 import { useTheme } from '../../hooks/useTheme'
@@ -7,14 +7,15 @@ import { useTheme } from '../../hooks/useTheme'
 const links = [
   { label: 'Home', href: '/' },
   { label: 'Predict', href: '/predict' },
-  { label: 'About', href: '/#about' },
-  { label: 'Contact', href: '/#contact' },
+  { label: 'About', href: '/about' },
+  { label: 'Contact', href: '/contact' },
 ]
 
 function Navbar() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const { theme, toggleTheme } = useTheme()
+  const location = useLocation()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -35,11 +36,19 @@ function Navbar() {
         </Link>
 
         <nav className="hidden items-center gap-6 text-sm text-slate-300 md:flex">
-          {links.map((link) => (
-            <Link key={link.label} to={link.href} className="transition hover:text-white">
-              {link.label}
-            </Link>
-          ))}
+          {links.map((link) => {
+            const active = location.pathname === link.href
+            return (
+              <Link
+                key={link.label}
+                to={link.href}
+                className={`transition ${active ? 'text-white' : 'hover:text-white'}`}
+                aria-current={active ? 'page' : undefined}
+              >
+                {link.label}
+              </Link>
+            )
+          })}
         </nav>
 
         <div className="flex items-center gap-2">
@@ -69,11 +78,20 @@ function Navbar() {
           className="mx-4 mt-3 rounded-2xl border border-white/10 bg-slate-950/90 p-4 shadow-2xl backdrop-blur-xl md:hidden"
         >
           <div className="flex flex-col gap-3 text-sm text-slate-200">
-            {links.map((link) => (
-              <Link key={link.label} to={link.href} onClick={() => setOpen(false)} className="rounded-xl px-3 py-2 transition hover:bg-white/10">
-                {link.label}
-              </Link>
-            ))}
+            {links.map((link) => {
+              const active = location.pathname === link.href
+              return (
+                <Link
+                  key={link.label}
+                  to={link.href}
+                  onClick={() => setOpen(false)}
+                  className={`rounded-xl px-3 py-2 transition ${active ? 'bg-white/10 text-white' : 'hover:bg-white/10'}`}
+                  aria-current={active ? 'page' : undefined}
+                >
+                  {link.label}
+                </Link>
+              )
+            })}
           </div>
         </motion.div>
       )}
