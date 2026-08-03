@@ -1,26 +1,68 @@
+import { Link } from "react-router-dom";
+
 function Footer() {
   return (
-    <footer className="border-t border-white/10 bg-slate-950/60 px-4 py-10 backdrop-blur-xl">
-      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-3">
-        <div>
-          <p className="text-lg font-semibold text-white">Project</p>
-          <p className="mt-3 text-sm text-slate-400">SmartCrete AI</p>
-          <p className="mt-2 text-sm text-slate-400">Explainable Multi-Objective Concrete Mix Optimization</p>
-        </div>
-       
-        <div>
-          <p className="text-lg font-semibold text-white">Powered By</p>
-          <div className="mt-3 flex flex-wrap gap-2 text-sm text-slate-300">
-            {['React', 'XGBoost', 'SHAP', 'Flask', 'Tailwind CSS'].map((item) => (
-              <span key={item} className="rounded-full border border-white/10 bg-white/10 px-3 py-1">
-                {item}
-              </span>
-            ))}
+    <footer className="mt-24 border-t border-white/10 bg-slate-950/70 backdrop-blur-xl">
+      <div className="mx-auto max-w-7xl px-6 py-10">
+        {/* Top */}
+        <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
+          <div>
+            <h2 className="text-2xl font-bold tracking-wide text-white">
+              SMARTCRETE <span className="text-blue-400">AI</span>
+            </h2>
+
+            <p className="mt-2 max-w-md text-sm text-slate-400">
+              Build stronger, smarter, and more sustainable concrete with the
+              power of Artificial Intelligence.
+            </p>
           </div>
+
+          {/* Navigation */}
+          <div className="flex items-center gap-8 text-sm">
+            <Link
+              to="/"
+              className="text-slate-400 transition hover:text-cyan-400"
+            >
+              Home
+            </Link>
+
+            <Link
+              to="/predict"
+              className="text-slate-400 transition hover:text-cyan-400"
+            >
+              Predict
+            </Link>
+
+            <Link
+              to="/about"
+              className="text-slate-400 transition hover:text-cyan-400"
+            >
+              About
+            </Link>
+
+            <Link
+              to="/contact"
+              className="text-slate-400 transition hover:text-cyan-400"
+            >
+              Contact
+            </Link>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="my-8 h-px bg-gradient-to-r from-transparent via-slate-700 to-transparent" />
+
+        {/* Bottom */}
+        <div className="flex flex-col items-center justify-between gap-3 text-sm text-slate-500 md:flex-row">
+          <p>© 2026 SmartCrete AI. All Rights Reserved.</p>
+
+          <p>
+            Designed for Sustainable Concrete Intelligence
+          </p>
         </div>
       </div>
     </footer>
-  )
+  );
 }
 
-export default Footer
+export default Footer;
