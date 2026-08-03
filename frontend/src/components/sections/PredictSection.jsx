@@ -3,18 +3,7 @@ import { motion } from 'framer-motion'
 import { ArrowRight, LoaderCircle, Sparkles } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { predictConcreteMix } from '../../services/predictionApi'
-import { usePrediction } from '../../context/PredictionContext'
-
-const defaultForm = {
-  cement: 540,
-  blast_furnace_slag: 0,
-  fly_ash: 0,
-  water: 162,
-  superplasticizer: 2.5,
-  coarse_aggregate: 1040,
-  fine_aggregate: 676,
-  age: 28,
-}
+import { usePrediction, defaultForm } from '../../context/PredictionContext'
 
 const fieldConfig = [
   { key: 'cement', label: 'Cement (kg/m³)', step: 1 },
@@ -29,11 +18,10 @@ const fieldConfig = [
 
 function PredictSection() {
   const navigate = useNavigate()
-  const { setPrediction } = usePrediction()
-  const [formData, setFormData] = useState(defaultForm)
-  const [result, setResult] = useState(null)
+  const { prediction, setPrediction, formData, setFormData } = usePrediction()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const result = prediction
 
   const handleChange = (event) => {
     const { name, value } = event.target
@@ -47,11 +35,9 @@ function PredictSection() {
     event.preventDefault()
     setLoading(true)
     setError('')
-    setResult(null)
 
     try {
       const response = await predictConcreteMix(formData)
-      setResult(response)
       setPrediction(response)
     } catch (err) {
       setError(err.message)
@@ -62,7 +48,6 @@ function PredictSection() {
 
   const handleClear = () => {
     setFormData(defaultForm)
-    setResult(null)
     setError('')
     setPrediction(null)
   }
@@ -170,8 +155,11 @@ function PredictSection() {
                 <button type="button" onClick={() => navigate('/optimization')} className="rounded-full border border-cyan-400/20 bg-cyan-500/10 px-4 py-2 text-sm font-medium text-cyan-100 transition hover:bg-cyan-500/20">
                   View Optimization
                 </button>
-                <button type="button" onClick={() => { setResult(null); setError(''); }} className="rounded-full border border-white/10 bg-slate-950/70 px-4 py-2 text-sm font-medium text-slate-200 transition hover:border-cyan-400/40 hover:text-white">
+                <button type="button" onClick={() => { setPrediction(null); setFormData(defaultForm); setError('') }} className="rounded-full border border-white/10 bg-slate-950/70 px-4 py-2 text-sm font-medium text-slate-200 transition hover:border-cyan-400/40 hover:text-white">
                   Predict Another Mix
+                </button>
+                <button type="button" onClick={handleClear} className="rounded-full border border-white/10 bg-slate-950/70 px-4 py-2 text-sm font-medium text-slate-200 transition hover:border-cyan-400/40 hover:text-white">
+                  Clear
                 </button>
               </div>
             </div>
