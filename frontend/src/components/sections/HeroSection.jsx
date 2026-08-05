@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { ArrowRight, Sparkles } from 'lucide-react'
-import { BrainCircuit, Blocks, FlaskConical, Microscope } from 'lucide-react'
 import TiltCard from '../ui/TiltCard'
+import HeroConstructionIllustration from '../HeroConstructionIllustration'
 
 function HeroSection() {
   return (
@@ -37,44 +37,20 @@ function HeroSection() {
 
         <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }} className="relative">
           <TiltCard className="rounded-[2rem] border border-white/10 bg-slate-950/70 p-4 shadow-2xl">
-            <div className="relative overflow-hidden rounded-[1.5rem] border border-white/10 bg-[radial-gradient(circle_at_top,_rgba(37,99,235,0.35),transparent_40%)] p-6">
+            <div className="relative overflow-hidden rounded-[1.5rem] border border-white/10 bg-[radial-gradient(circle_at_top,_rgba(37,99,235,0.35),transparent_40%)] p-4 sm:p-6">
               <div className="absolute right-6 top-6 h-24 w-24 rounded-full bg-blue-500/20 blur-3xl" />
               <div className="absolute bottom-6 left-6 h-24 w-24 rounded-full bg-emerald-500/20 blur-3xl" />
 
-              <div className="relative grid gap-4">
-                <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/10 px-4 py-3">
-                  <div>
-                    <p className="text-sm text-slate-400">AI Engineering Core</p>
-                    <p className="text-lg font-semibold text-white">Multi-objective blend generation</p>
-                  </div>
-                  <div className="rounded-2xl bg-blue-500/20 p-3 text-blue-300">
-                    <BrainCircuit size={24} />
-                  </div>
-                </div>
-
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="rounded-2xl border border-white/10 bg-slate-900/80 p-4">
-                    <div className="flex items-center gap-2 text-amber-300"><Blocks size={18} /> <span className="text-sm">Concrete Blocks</span></div>
-                    <div className="mt-4 flex gap-2">
-                      {[1,2,3].map((item) => <div key={item} className="h-12 w-12 rounded-xl border border-white/10 bg-gradient-to-br from-slate-700 to-slate-900" />)}
-                    </div>
-                  </div>
-                  <div className="rounded-2xl border border-white/10 bg-slate-900/80 p-4">
-                    <div className="flex items-center gap-2 text-emerald-300"><FlaskConical size={18} /> <span className="text-sm">Sustainability Lens</span></div>
-                    <div className="mt-4 h-24 rounded-xl border border-dashed border-emerald-400/20 bg-emerald-500/10" />
-                  </div>
-                </div>
-
-                <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-4">
-                  <div className="mb-3 flex items-center gap-2 text-cyan-300"><Microscope size={18} /> <span className="text-sm">Explainability Cascade</span></div>
-                  <div className="flex items-center gap-2">
-                    {["SHAP", "XGBoost", "Cost", "Carbon"].map((item) => (
-                      <span key={item} className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-sm text-slate-300">
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+              <div className="relative">
+                <HeroConstructionIllustration
+                  className="mx-auto w-full max-w-[520px]"
+                  style={{
+                    '--primary': '#2563eb',
+                    '--accent': '#06b6d4',
+                    '--ink': '#0f172a',
+                    '--muted': '#64748b',
+                  }}
+                />
               </div>
             </div>
           </TiltCard>
