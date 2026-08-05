@@ -10,7 +10,7 @@ from services.cost_service import CostService
 from services.optimization_service import OptimizationService
 from services.predictor import PredictorService
 from services.recommendation_service import RecommendationService
-from utils.helpers import build_feature_frame, get_strength_category, validate_payload
+from utils.helpers import build_feature_frame, calculate_sustainability_rating, get_strength_category, validate_payload
 
 bp = Blueprint("prediction", __name__)
 
@@ -57,6 +57,7 @@ def _build_shap_payload() -> list[dict[str, object]]:
             {
                 "feature": feature_key,
                 "contribution": round(numeric_contribution, 4),
+                "importance": round(abs(numeric_contribution), 4),
             }
         )
 
@@ -102,14 +103,35 @@ def predict() -> tuple[dict, int]:
         recommendations = recommendation_service.build_recommendations(payload, carbon_emission)
         top_optimized_mixes = optimization_service.get_top_optimized_mixes()
         shap_values = _build_shap_payload()
+
+        feature_importance = sorted(
+            [
+                {
+                    "feature": item["feature"],
+                    "importance": item["importance"],
+                    "contribution": item["contribution"],
+                }
+                for item in shap_values
+            ],
+            key=lambda item: abs(float(item["contribution"])),
+            reverse=True,
+        )
+
         if shap_values:
-            top_features = sorted(shap_values, key=lambda item: abs(float(item["contribution"])), reverse=True)[:3]
+            top_features = feature_importance[:3]
             feature_summary = ", ".join(str(item["feature"]) for item in top_features)
             explanation = (
                 f"The current prediction is most influenced by {feature_summary}, which together explain the model's confidence in this concrete mix."
             )
         else:
             explanation = "The model's strength estimate reflects the current concrete mix proportions and the learned relationships from the training data."
+
+        optimized_mixes = []
+        for mix in top_optimized_mixes:
+            mix_copy = mix.copy()
+            optimization_value = float(mix_copy.get("Optimization_Score", mix_copy.get("optimization_score", 0)))
+            mix_copy["sustainabilityRating"] = calculate_sustainability_rating(optimization_value)
+            optimized_mixes.append(mix_copy)
 
         return jsonify(
             {
@@ -120,9 +142,10 @@ def predict() -> tuple[dict, int]:
                 "optimization_score": optimization_score,
                 "sustainability_rating": sustainability_rating,
                 "recommendations": recommendations,
-                "top_optimized_mixes": top_optimized_mixes,
-                "optimized_mixes": top_optimized_mixes,
+                "feature_importance": feature_importance,
                 "shap_values": shap_values,
+                "optimized_mixes": optimized_mixes,
+                "top_optimized_mixes": optimized_mixes,
                 "explanation": explanation,
             }
         ), 200
