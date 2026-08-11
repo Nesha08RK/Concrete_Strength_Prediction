@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import CountUp from 'react-countup'
 import Plot from 'react-plotly.js'
 import { AlertCircle, BrainCircuit, Crown, Gauge, Sparkles, TrendingUp, Waves, Zap } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import DashboardCard from '../components/explainability/DashboardCard'
 import { usePrediction } from '../context/PredictionContext'
 
@@ -23,6 +23,7 @@ function formatMetric(value, prefix = '', suffix = '') {
 }
 
 function ExplainabilityPage() {
+  const navigate = useNavigate()
   const { prediction } = usePrediction()
 
   const data = prediction
@@ -121,10 +122,10 @@ function ExplainabilityPage() {
             </div>
             <h2 className="mt-4 text-2xl font-semibold text-white">No prediction available.</h2>
             <p className="mt-3 text-base leading-7 text-slate-300">Please predict a concrete mix first to unlock explainability insights.</p>
-            <Link to="/predict" className="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 px-5 py-3 font-medium text-white transition hover:scale-[1.01]">
+            <button onClick={() => navigate('/predict')} className="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 px-5 py-3 font-medium text-white transition hover:scale-[1.01]">
               Go to Prediction Page
               <Sparkles size={16} />
-            </Link>
+            </button>
           </div>
         ) : (
           <div className="space-y-6">
@@ -275,6 +276,14 @@ function ExplainabilityPage() {
                   <p>Supplementary materials may offer sustainable balance without severe loss.</p>
                 </div>
               </motion.div>
+            </div>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <button onClick={() => navigate('/predict')} className="rounded-full border border-white/10 bg-slate-950/70 px-4 py-2 text-sm font-medium text-slate-200 transition hover:border-cyan-400/40 hover:text-white">
+                Back to Prediction
+              </button>
+              <button onClick={() => navigate('/optimization')} className="rounded-full border border-cyan-400/20 bg-cyan-500/10 px-4 py-2 text-sm font-medium text-cyan-100 transition hover:bg-cyan-500/20">
+                Next → Optimization
+              </button>
             </div>
           </div>
         )}
