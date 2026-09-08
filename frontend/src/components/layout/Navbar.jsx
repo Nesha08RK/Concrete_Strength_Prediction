@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Menu, X, Moon, Sun } from 'lucide-react'
-import { useTheme } from '../../hooks/useTheme'
+import { Menu, X } from 'lucide-react'
 
 const links = [
   { label: 'Home', href: '/' },
@@ -14,7 +13,6 @@ const links = [
 function Navbar() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const { theme, toggleTheme } = useTheme()
   const location = useLocation()
 
   useEffect(() => {
@@ -30,19 +28,19 @@ function Navbar() {
       animate={{ y: 0, opacity: 1 }}
       className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? 'py-3' : 'py-4'}`}
     >
-      <div className={`mx-auto flex max-w-7xl items-center justify-between rounded-full border border-white/10 px-4 py-3 backdrop-blur-xl transition-all ${scrolled ? 'bg-slate-900/70 shadow-[0_0_60px_rgba(37,99,235,0.15)]' : 'bg-white/5'}`}>
-        <Link to="/" className="text-lg font-semibold tracking-[0.2em] text-white">
-          SMARTCRETE<span className="ml-2 text-blue-400">AI</span>
+      <div className={`mx-auto flex max-w-7xl items-center justify-between rounded-full border border-[#E1E5DC] px-4 py-3 backdrop-blur-xl transition-all ${scrolled ? 'bg-white/90 shadow-lg' : 'bg-white/70'}`}>
+        <Link to="/" className="text-lg font-semibold tracking-[0.2em] text-[#202124]">
+          SMARTCRETE<span className="ml-2 text-[#8B5CF6]">AI</span>
         </Link>
 
-        <nav className="hidden items-center gap-6 text-sm text-slate-300 md:flex">
+        <nav className="hidden items-center gap-6 text-sm text-[#6B6F68] md:flex">
           {links.map((link) => {
             const active = location.pathname === link.href
             return (
               <Link
                 key={link.label}
                 to={link.href}
-                className={`transition ${active ? 'text-white' : 'hover:text-white'}`}
+                className={`transition ${active ? 'font-semibold text-[#8B5CF6]' : 'hover:text-[#8B5CF6]'}`}
                 aria-current={active ? 'page' : undefined}
               >
                 {link.label}
@@ -54,16 +52,8 @@ function Navbar() {
         <div className="flex items-center gap-2">
           <button
             type="button"
-            onClick={toggleTheme}
-            className="rounded-full border border-white/10 bg-white/10 p-2 text-slate-200 transition hover:bg-white/20"
-            aria-label="Toggle theme"
-          >
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
-          <button
-            type="button"
             onClick={() => setOpen((current) => !current)}
-            className="rounded-full border border-white/10 bg-white/10 p-2 text-slate-200 md:hidden"
+            className="rounded-full border border-[#E1E5DC] bg-white p-2 text-[#202124] md:hidden"
             aria-label="Toggle menu"
           >
             {open ? <X size={18} /> : <Menu size={18} />}
@@ -75,9 +65,9 @@ function Navbar() {
         <motion.div
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mx-4 mt-3 rounded-2xl border border-white/10 bg-slate-950/90 p-4 shadow-2xl backdrop-blur-xl md:hidden"
+          className="mx-4 mt-3 rounded-2xl border border-[#E1E5DC] bg-white/95 p-4 shadow-lg backdrop-blur-xl md:hidden"
         >
-          <div className="flex flex-col gap-3 text-sm text-slate-200">
+          <div className="flex flex-col gap-3 text-sm text-[#625D57]">
             {links.map((link) => {
               const active = location.pathname === link.href
               return (
@@ -85,7 +75,7 @@ function Navbar() {
                   key={link.label}
                   to={link.href}
                   onClick={() => setOpen(false)}
-                  className={`rounded-xl px-3 py-2 transition ${active ? 'bg-white/10 text-white' : 'hover:bg-white/10'}`}
+                  className={`rounded-xl px-3 py-2 transition ${active ? 'bg-violet-500/10 text-violet-700' : 'hover:bg-violet-500/10'}`}
                   aria-current={active ? 'page' : undefined}
                 >
                   {link.label}
