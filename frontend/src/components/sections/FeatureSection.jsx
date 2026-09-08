@@ -33,8 +33,8 @@ function FeatureSection() {
     <section id="predict" className="mx-auto max-w-6xl">
       <div className="mb-8 flex items-end justify-between gap-4">
         <div>
-          <p className="text-sm uppercase tracking-[0.3em] text-blue-300">Capabilities</p>
-          <h2 className="mt-2 text-3xl font-semibold text-white">Engineered around modern concrete intelligence</h2>
+          <p className="text-sm uppercase tracking-[0.3em] text-[#4B4641]">Capabilities</p>
+          <h2 className="mt-2 text-3xl font-semibold text-[#252329]">Engineered around modern concrete intelligence</h2>
         </div>
       </div>
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
@@ -55,8 +55,8 @@ function FeatureSection() {
                 <div className="mb-4 inline-flex rounded-2xl border border-white/10 bg-slate-950/70 p-3 text-blue-200">
                   <Icon size={22} />
                 </div>
-                <h3 className="text-xl font-semibold text-white">{feature.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-slate-300">{feature.description}</p>
+                <h3 className="text-xl font-semibold text-[#252329]">{feature.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-[#5F5A55]">{feature.description}</p>
               </div>
             </motion.article>
           )
