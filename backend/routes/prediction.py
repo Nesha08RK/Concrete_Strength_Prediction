@@ -10,7 +10,13 @@ from services.cost_service import CostService
 from services.optimization_service import OptimizationService
 from services.predictor import PredictorService
 from services.recommendation_service import RecommendationService
-from utils.helpers import build_feature_frame, calculate_sustainability_rating, get_strength_category, validate_payload
+from utils.helpers import (
+    build_feature_frame,
+    calculate_sustainability_rating,
+    get_strength_category,
+    make_json_safe,
+    validate_payload,
+)
 
 bp = Blueprint("prediction", __name__)
 
@@ -76,6 +82,8 @@ def predict() -> tuple[dict, int]:
     except BadRequest:
         payload = {}
 
+    current_app.logger.info("Prediction request payload: %s", payload)
+
     errors = validate_payload(payload)
     if errors:
         return jsonify({"error": "Invalid request", "details": errors}), 400
@@ -91,17 +99,24 @@ def predict() -> tuple[dict, int]:
 
     try:
         features = build_feature_frame(payload)
+        current_app.logger.info("Converted model features: %s", features.to_dict(orient="records"))
         predicted_strength = predictor_service.predict_strength(features)
+        current_app.logger.info("Model prediction: %s", predicted_strength)
 
         strength_category = get_strength_category(predicted_strength)
         material_cost = cost_service.calculate_material_cost(payload)
+        current_app.logger.info("Material cost: %s", material_cost)
         carbon_emission = carbon_service.calculate_carbon_emission(payload)
+        current_app.logger.info("Carbon emission: %s", carbon_emission)
         optimization_score = optimization_service.compute_optimization_score(
             predicted_strength, material_cost, carbon_emission
         )
+        current_app.logger.info("Optimization score: %s", optimization_score)
         sustainability_rating = round(float(optimization_score / 20.0), 2)
         recommendations = recommendation_service.build_recommendations(payload, carbon_emission)
+        current_app.logger.info("Recommendations: %s", recommendations)
         top_optimized_mixes = optimization_service.get_top_optimized_mixes()
+        current_app.logger.info("Optimized mixes loaded: %s", len(top_optimized_mixes))
         shap_values = _build_shap_payload()
 
         feature_importance = sorted(
@@ -133,7 +148,7 @@ def predict() -> tuple[dict, int]:
             mix_copy["sustainabilityRating"] = calculate_sustainability_rating(optimization_value)
             optimized_mixes.append(mix_copy)
 
-        return jsonify(
+        response_data = make_json_safe(
             {
                 "predicted_strength": round(predicted_strength, 2),
                 "strength_category": strength_category,
@@ -148,8 +163,12 @@ def predict() -> tuple[dict, int]:
                 "top_optimized_mixes": optimized_mixes,
                 "explanation": explanation,
             }
-        ), 200
+        )
+        current_app.logger.info("Prediction response prepared")
+        return jsonify(response_data), 200
     except FileNotFoundError as exc:
+        current_app.logger.exception("Prediction failed: required file missing")
         return jsonify({"error": "File not found", "details": str(exc)}), 500
     except Exception as exc:  # noqa: BLE001
+        current_app.logger.exception("Prediction failed")
         return jsonify({"error": "Internal server error", "details": str(exc)}), 500
