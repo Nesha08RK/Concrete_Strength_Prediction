@@ -154,10 +154,10 @@ function OptimizationPage() {
                 </div>
                 <div className="space-y-4">
                   <div className="h-[220px] rounded-[1.25rem] border border-white/10 bg-slate-900/70 p-3">
-                    <Plot data={[strengthCost]} layout={{ paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', margin: { l: 40, r: 20, t: 20, b: 40 }, font: { color: '#f8fafc' }, xaxis: { color: '#cbd5e1' }, yaxis: { color: '#cbd5e1' } }} config={{ responsive: true, displayModeBar: false }} useResizeHandler style={{ width: '100%', height: '100%' }} />
+                    <Plot data={[strengthCost]} layout={{ paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', margin: { l: 40, r: 20, t: 20, b: 40 }, font: { color: '#242329' }, xaxis: { color: '#625D57', gridcolor: 'rgba(98,93,87,0.16)' }, yaxis: { color: '#625D57', gridcolor: 'rgba(98,93,87,0.16)' } }} config={{ responsive: true, displayModeBar: false }} useResizeHandler style={{ width: '100%', height: '100%' }} />
                   </div>
                   <div className="h-[220px] rounded-[1.25rem] border border-white/10 bg-slate-900/70 p-3">
-                    <Plot data={[strengthCarbon]} layout={{ paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', margin: { l: 40, r: 20, t: 20, b: 40 }, font: { color: '#f8fafc' }, xaxis: { color: '#cbd5e1' }, yaxis: { color: '#cbd5e1' } }} config={{ responsive: true, displayModeBar: false }} useResizeHandler style={{ width: '100%', height: '100%' }} />
+                    <Plot data={[strengthCarbon]} layout={{ paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', margin: { l: 40, r: 20, t: 20, b: 40 }, font: { color: '#242329' }, xaxis: { color: '#625D57', gridcolor: 'rgba(98,93,87,0.16)' }, yaxis: { color: '#625D57', gridcolor: 'rgba(98,93,87,0.16)' } }} config={{ responsive: true, displayModeBar: false }} useResizeHandler style={{ width: '100%', height: '100%' }} />
                   </div>
                 </div>
               </motion.div>
@@ -189,7 +189,7 @@ function OptimizationPage() {
                   ))}
                 </div>
                 <div className="mt-6 h-[220px] rounded-[1.25rem] border border-white/10 bg-slate-900/70 p-3">
-                  <Plot data={[scoreDistribution, topTenMixes]} layout={{ barmode: 'group', paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', margin: { l: 40, r: 20, t: 20, b: 40 }, font: { color: '#f8fafc' }, xaxis: { color: '#cbd5e1' }, yaxis: { color: '#cbd5e1' } }} config={{ responsive: true, displayModeBar: false }} useResizeHandler style={{ width: '100%', height: '100%' }} />
+                  <Plot data={[scoreDistribution, topTenMixes]} layout={{ barmode: 'group', paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', margin: { l: 40, r: 20, t: 20, b: 40 }, font: { color: '#242329' }, xaxis: { color: '#625D57', gridcolor: 'rgba(98,93,87,0.16)' }, yaxis: { color: '#625D57', gridcolor: 'rgba(98,93,87,0.16)' } }} config={{ responsive: true, displayModeBar: false }} useResizeHandler style={{ width: '100%', height: '100%' }} />
                 </div>
               </motion.div>
             </div>
