@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from typing import Any
 
 import numpy as np
@@ -50,17 +51,30 @@ def build_feature_frame(payload: dict[str, Any]) -> pd.DataFrame:
         "Fine Aggregate",
         "Age",
     ]
-    values = [
-        payload["cement"],
-        payload["blast_furnace_slag"],
-        payload["fly_ash"],
-        payload["water"],
-        payload["superplasticizer"],
-        payload["coarse_aggregate"],
-        payload["fine_aggregate"],
-        payload["age"],
+    input_names = [
+        "cement",
+        "blast_furnace_slag",
+        "fly_ash",
+        "water",
+        "superplasticizer",
+        "coarse_aggregate",
+        "fine_aggregate",
+        "age",
     ]
+    values = [float(payload[name]) for name in input_names]
     return pd.DataFrame([values], columns=feature_names)
+
+
+def make_json_safe(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {str(key): make_json_safe(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [make_json_safe(item) for item in value]
+    if isinstance(value, np.generic):
+        return make_json_safe(value.item())
+    if isinstance(value, float):
+        return value if math.isfinite(value) else None
+    return value
 
 
 def get_strength_category(predicted_strength: float) -> str:
