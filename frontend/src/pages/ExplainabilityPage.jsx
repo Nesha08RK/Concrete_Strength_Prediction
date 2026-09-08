@@ -72,10 +72,10 @@ function ExplainabilityPage() {
       orientation: 'h',
       x: steps.map((entry) => entry.contribution),
       measure: steps.map(() => 'relative'),
-      connector: { line: { color: 'rgba(148, 163, 184, 0.45)' } },
+      connector: { line: { color: 'rgba(98, 93, 87, 0.35)' } },
       increasing: { marker: { color: '#22d3ee' } },
       decreasing: { marker: { color: '#fb7185' } },
-      totals: { marker: { color: '#f8fafc' } },
+      totals: { marker: { color: '#E5DFD5' } },
       hovertemplate: '%{x:.2f} contribution<extra></extra>',
       y,
     }
@@ -154,9 +154,9 @@ function ExplainabilityPage() {
                     plot_bgcolor: 'rgba(0,0,0,0)',
                     margin: { l: 80, r: 40, t: 20, b: 40 },
                     showlegend: false,
-                    xaxis: { showgrid: true, gridcolor: 'rgba(148,163,184,0.16)', zeroline: false, color: '#cbd5e1' },
-                    yaxis: { automargin: true, color: '#e2e8f0' },
-                    font: { color: '#f8fafc' },
+                    xaxis: { showgrid: true, gridcolor: 'rgba(98,93,87,0.16)', zeroline: false, color: '#625D57' },
+                    yaxis: { automargin: true, color: '#625D57' },
+                    font: { color: '#242329' },
                   }}
                   config={{ responsive: true, displayModeBar: false }}
                   useResizeHandler
@@ -179,9 +179,9 @@ function ExplainabilityPage() {
                       plot_bgcolor: 'rgba(0,0,0,0)',
                       margin: { l: 80, r: 40, t: 20, b: 40 },
                       showlegend: false,
-                      xaxis: { color: '#cbd5e1', gridcolor: 'rgba(148,163,184,0.16)' },
-                      yaxis: { automargin: true, color: '#e2e8f0' },
-                      font: { color: '#f8fafc' },
+                      xaxis: { color: '#625D57', gridcolor: 'rgba(98,93,87,0.16)' },
+                      yaxis: { automargin: true, color: '#625D57' },
+                      font: { color: '#242329' },
                     }}
                     config={{ responsive: true, displayModeBar: false }}
                     useResizeHandler
@@ -203,9 +203,9 @@ function ExplainabilityPage() {
                       plot_bgcolor: 'rgba(0,0,0,0)',
                       margin: { l: 80, r: 40, t: 20, b: 40 },
                       showlegend: false,
-                      xaxis: { title: 'Contribution', color: '#cbd5e1', gridcolor: 'rgba(148,163,184,0.16)' },
-                      yaxis: { automargin: true, color: '#e2e8f0' },
-                      font: { color: '#f8fafc' },
+                      xaxis: { title: 'Contribution', color: '#625D57', gridcolor: 'rgba(98,93,87,0.16)' },
+                      yaxis: { automargin: true, color: '#625D57' },
+                      font: { color: '#242329' },
                     }}
                     config={{ responsive: true, displayModeBar: false }}
                     useResizeHandler
