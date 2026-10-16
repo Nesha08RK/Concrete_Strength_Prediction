@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { ArrowRight, Sparkles } from 'lucide-react'
 
-function MixCard({ mix, index }) {
+function MixCard({ mix, index, onSelect }) {
   const recommendation = mix?.recommendation || 'Balanced mix recommendation'
   const sustainabilityRating = Number(mix?.sustainabilityRating ?? mix?.Sustainability_Rating ?? 0)
 
@@ -48,10 +48,15 @@ function MixCard({ mix, index }) {
           <p className="text-sm text-slate-400">Sustainability Rating</p>
           <p className="mt-1 text-base font-semibold text-white">{sustainabilityRating.toFixed(2)}/5</p>
         </div>
-        <div className="flex items-center gap-2 text-sm text-cyan-200">
+        <button
+          type="button"
+          onClick={() => onSelect(mix, index)}
+          aria-label={`View balanced mix recommendation for mix ${index + 1}`}
+          className="flex items-center gap-2 text-left text-sm text-cyan-200 transition hover:text-cyan-100"
+        >
           <span>{recommendation}</span>
           <ArrowRight size={16} />
-        </div>
+        </button>
       </div>
     </motion.div>
   )
