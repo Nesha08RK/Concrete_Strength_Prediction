@@ -6,13 +6,13 @@ import { predictConcreteMix } from '../../services/predictionApi'
 import { usePrediction, defaultForm } from '../../context/PredictionContext'
 
 const fieldConfig = [
-  { key: 'cement', label: 'Cement (kg/m³)', step: 1 },
-  { key: 'blast_furnace_slag', label: 'Blast Furnace Slag (kg/m³)', step: 1 },
-  { key: 'fly_ash', label: 'Fly Ash (kg/m³)', step: 1 },
-  { key: 'water', label: 'Water (kg/m³)', step: 0.1 },
-  { key: 'superplasticizer', label: 'Superplasticizer (kg/m³)', step: 0.1 },
-  { key: 'coarse_aggregate', label: 'Coarse Aggregate (kg/m³)', step: 1 },
-  { key: 'fine_aggregate', label: 'Fine Aggregate (kg/m³)', step: 1 },
+  { key: 'cement', label: 'Cement (kg/m³)', step: 'any' },
+  { key: 'blast_furnace_slag', label: 'Blast Furnace Slag (kg/m³)', step: 'any' },
+  { key: 'fly_ash', label: 'Fly Ash (kg/m³)', step: 'any' },
+  { key: 'water', label: 'Water (kg/m³)', step: 'any' },
+  { key: 'superplasticizer', label: 'Superplasticizer (kg/m³)', step: 'any' },
+  { key: 'coarse_aggregate', label: 'Coarse Aggregate (kg/m³)', step: 'any' },
+  { key: 'fine_aggregate', label: 'Fine Aggregate (kg/m³)', step: 'any' },
   { key: 'age', label: 'Age (days)', step: 1 },
 ]
 
@@ -33,11 +33,30 @@ function PredictSection() {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
+    const payload = {}
+    for (const field of fieldConfig) {
+      const value = formData[field.key]
+      if (value === null || value === undefined || value === '') {
+        setError(`${field.label} is required.`)
+        return
+      }
+      const numericValue = typeof value === 'number' ? value : Number(value)
+      if (!Number.isFinite(numericValue) || numericValue < 0) {
+        setError(`${field.label} must be a finite, non-negative number.`)
+        return
+      }
+      if (field.key === 'age' && !Number.isInteger(numericValue)) {
+        setError('Age must be a whole number of days.')
+        return
+      }
+      payload[field.key] = numericValue
+    }
+
     setLoading(true)
     setError('')
 
     try {
-      const response = await predictConcreteMix(formData)
+      const response = await predictConcreteMix(payload)
       setPrediction(response)
     } catch (err) {
       setError(err.message)
@@ -76,6 +95,7 @@ function PredictSection() {
                   type="number"
                   min="0"
                   step={field.step}
+                  required
                   value={formData[field.key]}
                   onChange={handleChange}
                   className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2 text-white outline-none ring-0 transition focus:border-cyan-400"
