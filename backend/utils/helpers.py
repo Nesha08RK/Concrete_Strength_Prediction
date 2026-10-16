@@ -30,10 +30,19 @@ def validate_payload(payload: dict[str, Any]) -> list[str]:
     for field in required_fields:
         value = payload.get(field)
         if value is None:
+            errors.append(f"Missing value for {field}")
             continue
         if isinstance(value, (int, float)) and not isinstance(value, bool):
-            if value < 0:
+            try:
+                is_finite = math.isfinite(value)
+            except OverflowError:
+                is_finite = False
+            if not is_finite:
+                errors.append(f"Invalid value for {field}: must be finite")
+            elif value < 0:
                 errors.append(f"Invalid value for {field}: must be non-negative")
+            elif field == "age" and not float(value).is_integer():
+                errors.append("Invalid value for age: must be a whole number of days")
         else:
             errors.append(f"Invalid value for {field}: expected a number")
 

@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import CountUp from 'react-countup'
 import Plot from 'react-plotly.js'
@@ -9,12 +9,14 @@ import MixCard from '../components/optimization/MixCard'
 import ComparisonCard from '../components/optimization/ComparisonCard'
 import BadgeChip from '../components/optimization/BadgeChip'
 import { usePrediction } from '../context/PredictionContext'
+import RecommendationDetail from '../components/optimization/RecommendationDetail'
 
 const badges = ['Eco Friendly', 'Low Carbon', 'Cost Efficient', 'High Strength', 'Balanced Mix']
 
 function OptimizationPage() {
   const navigate = useNavigate()
-  const { prediction } = usePrediction()
+  const { prediction, setPrediction, setFormData } = usePrediction()
+  const [selectedMix, setSelectedMix] = useState(null)
   const data = prediction
   const mixes = data?.optimized_mixes || data?.top_optimized_mixes || data?.mixes || []
 
@@ -128,7 +130,12 @@ function OptimizationPage() {
               </div>
               <div className="grid gap-4 xl:grid-cols-2">
                 {mixes.slice(0, 6).map((mix, index) => (
-                  <MixCard key={mix?.id || index} mix={mix} index={index} />
+                  <MixCard
+                    key={mix?.id || index}
+                    mix={mix}
+                    index={index}
+                    onSelect={(selected, selectedIndex) => setSelectedMix({ mix: selected, index: selectedIndex })}
+                  />
                 ))}
               </div>
             </motion.div>
@@ -154,10 +161,10 @@ function OptimizationPage() {
                 </div>
                 <div className="space-y-4">
                   <div className="h-[220px] rounded-[1.25rem] border border-white/10 bg-slate-900/70 p-3">
-                    <Plot data={[strengthCost]} layout={{ paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', margin: { l: 40, r: 20, t: 20, b: 40 }, font: { color: '#242329' }, xaxis: { color: '#625D57', gridcolor: 'rgba(98,93,87,0.16)' }, yaxis: { color: '#625D57', gridcolor: 'rgba(98,93,87,0.16)' } }} config={{ responsive: true, displayModeBar: false }} useResizeHandler style={{ width: '100%', height: '100%' }} />
+                    <Plot data={[strengthCost]} layout={{ paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', margin: { l: 60, r: 20, t: 20, b: 55 }, font: { color: '#242329' }, xaxis: { title: { text: 'Material Cost (₹/m³)' }, color: '#625D57', gridcolor: 'rgba(98,93,87,0.16)' }, yaxis: { title: { text: 'Predicted Strength (MPa)' }, color: '#625D57', gridcolor: 'rgba(98,93,87,0.16)' } }} config={{ responsive: true, displayModeBar: false }} useResizeHandler style={{ width: '100%', height: '100%' }} />
                   </div>
                   <div className="h-[220px] rounded-[1.25rem] border border-white/10 bg-slate-900/70 p-3">
-                    <Plot data={[strengthCarbon]} layout={{ paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', margin: { l: 40, r: 20, t: 20, b: 40 }, font: { color: '#242329' }, xaxis: { color: '#625D57', gridcolor: 'rgba(98,93,87,0.16)' }, yaxis: { color: '#625D57', gridcolor: 'rgba(98,93,87,0.16)' } }} config={{ responsive: true, displayModeBar: false }} useResizeHandler style={{ width: '100%', height: '100%' }} />
+                    <Plot data={[strengthCarbon]} layout={{ paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', margin: { l: 60, r: 20, t: 20, b: 55 }, font: { color: '#242329' }, xaxis: { title: { text: 'Carbon Emissions (kg CO₂/m³)' }, color: '#625D57', gridcolor: 'rgba(98,93,87,0.16)' }, yaxis: { title: { text: 'Predicted Strength (MPa)' }, color: '#625D57', gridcolor: 'rgba(98,93,87,0.16)' } }} config={{ responsive: true, displayModeBar: false }} useResizeHandler style={{ width: '100%', height: '100%' }} />
                   </div>
                 </div>
               </motion.div>
@@ -189,7 +196,7 @@ function OptimizationPage() {
                   ))}
                 </div>
                 <div className="mt-6 h-[220px] rounded-[1.25rem] border border-white/10 bg-slate-900/70 p-3">
-                  <Plot data={[scoreDistribution, topTenMixes]} layout={{ barmode: 'group', paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', margin: { l: 40, r: 20, t: 20, b: 40 }, font: { color: '#242329' }, xaxis: { color: '#625D57', gridcolor: 'rgba(98,93,87,0.16)' }, yaxis: { color: '#625D57', gridcolor: 'rgba(98,93,87,0.16)' } }} config={{ responsive: true, displayModeBar: false }} useResizeHandler style={{ width: '100%', height: '100%' }} />
+                  <Plot data={[scoreDistribution, topTenMixes]} layout={{ barmode: 'group', paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', margin: { l: 60, r: 20, t: 20, b: 55 }, font: { color: '#242329' }, xaxis: { title: { text: 'Optimization Score / Mix' }, color: '#625D57', gridcolor: 'rgba(98,93,87,0.16)' }, yaxis: { title: { text: 'Frequency / Score' }, color: '#625D57', gridcolor: 'rgba(98,93,87,0.16)' } }} config={{ responsive: true, displayModeBar: false }} useResizeHandler style={{ width: '100%', height: '100%' }} />
                 </div>
               </motion.div>
             </div>
@@ -204,6 +211,18 @@ function OptimizationPage() {
           </div>
         )}
       </motion.div>
+      {selectedMix && (
+        <RecommendationDetail
+          mix={selectedMix.mix}
+          mixNumber={selectedMix.index + 1}
+          onClose={() => setSelectedMix(null)}
+          onUseMix={(formValues) => {
+            setFormData(formValues)
+            setSelectedMix(null)
+            navigate('/predict')
+          }}
+        />
+      )}
     </div>
   )
 }
