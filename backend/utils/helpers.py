@@ -96,5 +96,15 @@ def get_strength_category(predicted_strength: float) -> str:
     return "Excellent"
 
 
-def calculate_sustainability_rating(optimization_score: float) -> float:
-    return round(float(np.clip(optimization_score / 20.0, 0.0, 5.0)), 2)
+def calculate_sustainability_rating(optimization_score: float, score_scale: float = 100.0) -> float:
+    """Map the composite optimization score to the equivalent 0–5 rating."""
+    try:
+        score = float(optimization_score)
+        scale = float(score_scale)
+    except (TypeError, ValueError, OverflowError):
+        return 0.0
+
+    if not math.isfinite(score) or not math.isfinite(scale) or scale <= 0:
+        return 0.0
+
+    return float(np.clip(score / scale * 5.0, 0.0, 5.0))

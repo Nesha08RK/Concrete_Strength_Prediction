@@ -75,6 +75,25 @@ def health() -> tuple[dict, int]:
     return jsonify({"application": "SmartCrete AI Backend", "status": "Running"}), 200
 
 
+@bp.route("/api/optimization", methods=["GET"])
+def optimization() -> tuple[dict, int]:
+    optimization_service: OptimizationService = current_app.config["optimization_service"]
+    try:
+        optimized_mixes = optimization_service.get_top_optimized_mixes()
+        return jsonify(
+            {
+                "optimized_mixes": optimized_mixes,
+                "top_optimized_mixes": optimized_mixes,
+            }
+        ), 200
+    except FileNotFoundError as exc:
+        current_app.logger.exception("Optimization recommendations failed: required file missing")
+        return jsonify({"error": "File not found", "details": str(exc)}), 500
+    except Exception as exc:  # noqa: BLE001
+        current_app.logger.exception("Optimization recommendations failed")
+        return jsonify({"error": "Internal server error", "details": str(exc)}), 500
+
+
 @bp.route("/api/predict", methods=["POST"])
 def predict() -> tuple[dict, int]:
     try:
@@ -112,7 +131,10 @@ def predict() -> tuple[dict, int]:
             predicted_strength, material_cost, carbon_emission
         )
         current_app.logger.info("Optimization score: %s", optimization_score)
-        sustainability_rating = round(float(optimization_score / 20.0), 2)
+        sustainability_rating = round(
+            float(calculate_sustainability_rating(optimization_score, score_scale=100.0)),
+            2,
+        )
         recommendations = recommendation_service.build_recommendations(payload, carbon_emission)
         current_app.logger.info("Recommendations: %s", recommendations)
         top_optimized_mixes = optimization_service.get_top_optimized_mixes()
@@ -141,12 +163,7 @@ def predict() -> tuple[dict, int]:
         else:
             explanation = "The model's strength estimate reflects the current concrete mix proportions and the learned relationships from the training data."
 
-        optimized_mixes = []
-        for mix in top_optimized_mixes:
-            mix_copy = mix.copy()
-            optimization_value = float(mix_copy.get("Optimization_Score", mix_copy.get("optimization_score", 0)))
-            mix_copy["sustainabilityRating"] = calculate_sustainability_rating(optimization_value)
-            optimized_mixes.append(mix_copy)
+        optimized_mixes = top_optimized_mixes
 
         response_data = make_json_safe(
             {

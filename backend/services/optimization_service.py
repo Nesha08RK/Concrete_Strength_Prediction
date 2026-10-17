@@ -3,6 +3,7 @@ from __future__ import annotations
 import pandas as pd
 
 from config import OPTIMIZED_CSV_PATH, RESULTS_CSV_PATH
+from utils.helpers import calculate_sustainability_rating
 
 
 class OptimizationService:
@@ -40,4 +41,8 @@ class OptimizationService:
     def get_top_optimized_mixes(self) -> list[dict[str, object]]:
         data = self.load_data()
         top = data.head(10).copy()
-        return top.to_dict(orient="records")
+        mixes = top.to_dict(orient="records")
+        for mix in mixes:
+            score = mix.get("Optimization_Score", mix.get("optimization_score"))
+            mix["sustainabilityRating"] = calculate_sustainability_rating(score, score_scale=1.0)
+        return mixes
